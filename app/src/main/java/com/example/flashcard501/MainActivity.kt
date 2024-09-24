@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Flashcards(){
+fun Flashcards() {
     val questionList = listOf(
         "What is 5 multiplied by 7?" to "35",
         "How many continents are there on Earth?" to "7",
@@ -61,15 +61,15 @@ fun Flashcards(){
         "What is the value of Pi (π) rounded to two decimal places?" to "3.14",
         "How many millimeters are there in a centimeter?" to "10",
         "How many letters are there in the English alphabet?" to "26",
-        "Quiz Complete" to "13491241042194012491240914"
-    ) //18 questions
+        "Quiz Complete" to "13491241042194012491240914" //unguessable answer to last 'question' so the app doesn't break
+    )
     var snackbarVisibleState by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
-    var currentQuestion by remember { mutableIntStateOf(16)}
+    var currentQuestion by remember { mutableIntStateOf(0) }
     var answerCorrect by remember { mutableStateOf(false) }
     Column {
         Spacer(modifier = Modifier.height(40.dp))
-        Card { Text(text = questionList[currentQuestion].first) }
+        Card { Text(text = questionList[currentQuestion].first) }//displays question part of question,answer tuple
         Spacer(modifier = Modifier.height(15.dp))
         TextField(
             value = text,
@@ -77,46 +77,48 @@ fun Flashcards(){
             label = { Text("Answer") })
         Button(onClick =
         {
-            if(text.isNotEmpty() && questionList[currentQuestion].second == text) {
+            if (text.isNotEmpty() && questionList[currentQuestion].second == text) { //answer is correct, go to next question and reset field
                 text = ""
                 currentQuestion += 1
-                answerCorrect = true
-                snackbarVisibleState = true
+                answerCorrect = true //makes snackbar "correct"
+                snackbarVisibleState = true //show snackbar
 
             } else {
                 text = ""
-                answerCorrect = false
-                snackbarVisibleState = true
+                answerCorrect = false //makes snackbar "wrong"
+                snackbarVisibleState = true //show snackbar
             }
         }) { Text("Check Answer") }
         if (snackbarVisibleState) {
             Snackbar(
                 action = {
                     Button(onClick = {
-                        snackbarVisibleState = false
+                        snackbarVisibleState = false //dismiss on click
                     }) {
                         Text("Dismiss")
                     }
                 },
                 modifier = Modifier.padding(8.dp)
-            ) { if (answerCorrect){Text(text = "Correct") }
-                else {
-                Text("Wrong")
+            ) {
+                if (answerCorrect) {
+                    Text(text = "Correct")
+                } else {
+                    Text("Wrong")
+                }
+            }
         }
-    }
-}
 
         if (currentQuestion == 18) {
-        Snackbar(
-            action = {
-                Button(onClick = {
-                    currentQuestion = 0
-                }) {
-                    Text("Reset Quiz")
-                }
-            },
-            modifier = Modifier.padding(8.dp)
-        ) {Text(text = "Quiz Complete")}
+            Snackbar(
+                action = {
+                    Button(onClick = {
+                        currentQuestion = 0
+                    }) {
+                        Text("Reset Quiz")
+                    }
+                },
+                modifier = Modifier.padding(8.dp)
+            ) { Text(text = "Quiz Complete") }
         }
     }
 }
